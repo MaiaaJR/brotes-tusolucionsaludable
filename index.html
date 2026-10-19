@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A4B43">
+<title>Tienda Brotes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Brotes, tu solución saludable. Elegí tus productos y mandá tu pedido por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bree+Serif&family=Figtree:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: cabecera verde de marca con un brote dibujado y borde en curva (el único gesto fuerte);
+   abajo todo calmo: fondo fresco, buscador redondo, categorías como pastillas de colores suaves, productos en tarjetas; barra amarilla del pedido */
+:root{
+  --marca:#0A4B43; --marca-2:#0F5A4F; --hoja:#2F7D52; --amarillo:#F6D743; --lima:#B8D45A; --lima-2:#7DBE5A;
+  --fondo:#F6F8F1; --tarjeta:#FFFFFF; --tinta:#16392F; --suave:#5C7166; --linea:#E4EADD; --tenue:#EEF4E8;
+  --t1:#E2EFDC; --t2:#F0F4D3; --t3:#FBF0C6; --t4:#DCEFE6;
+  --sobre-marca:#F7F5EC; --sobre-marca-suave:#C7DDD1; --sobre-amarillo:#0A4B43; --resalte:#FFF0A0;
+  --error:#A3301F; --peligro-fondo:#FBEDE9; --sombra:0 1px 2px rgb(22 57 47 / .06), 0 6px 18px rgb(22 57 47 / .06);
+  --display:'Bree Serif', Georgia, serif; --texto:'Figtree', 'Segoe UI', system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --fondo:#0D211C; --tarjeta:#132F28; --tinta:#E8F1E5; --suave:#A7C0B3; --linea:#23453B; --tenue:#1A3D34;
+  --t1:#1C4136; --t2:#2A3F25; --t3:#3E3A1C; --t4:#173E37;
+  --resalte:#5A5020; --error:#FF9F91; --peligro-fondo:#3A201B; --sombra:0 1px 2px rgb(0 0 0 / .3); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --fondo:#0D211C; --tarjeta:#132F28; --tinta:#E8F1E5; --suave:#A7C0B3; --linea:#23453B; --tenue:#1A3D34;
+  --t1:#1C4136; --t2:#2A3F25; --t3:#3E3A1C; --t4:#173E37;
+  --resalte:#5A5020; --error:#FF9F91; --peligro-fondo:#3A201B; --sombra:0 1px 2px rgb(0 0 0 / .3); color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--fondo);color:var(--tinta);font-family:var(--texto);font-size:17px;line-height:1.45;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:30;background:var(--marca)}
+.ancho{max-width:720px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px))}
+button,input,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--lima-2);outline-offset:2px}
+
+/* Cabecera */
+.hero{position:relative;overflow:hidden;background:radial-gradient(120% 90% at 85% 10%,var(--marca-2) 0%,var(--marca) 60%);color:var(--sobre-marca)}
+.hero .circulo{position:absolute;right:-70px;top:-60px;width:260px;height:260px;border-radius:50%;background:var(--lima);opacity:.14}
+.hero .circulo.dos{right:auto;left:-90px;top:auto;bottom:-120px;width:220px;height:220px;opacity:.08;background:var(--amarillo)}
+.hero-in{position:relative;display:grid;grid-template-columns:1fr auto;align-items:end;gap:8px;padding-block:30px 46px}
+.marca{font-family:var(--display);font-weight:400;font-size:clamp(3rem,13vw,4.4rem);line-height:.95;color:var(--amarillo);margin:0;letter-spacing:-.5px}
+.lema{font-family:var(--display);font-size:clamp(1.15rem,4.6vw,1.4rem);margin:6px 0 0;color:var(--sobre-marca)}
+.intro{margin:14px 0 0;color:var(--sobre-marca-suave);max-width:34ch;font-size:1rem}
+.brote{width:clamp(92px,26vw,132px);height:auto;margin-bottom:-6px}
+.ola{position:absolute;left:0;right:0;bottom:-1px;width:100%;height:28px;display:block}
+.ola path{fill:var(--fondo)}
+body.dentro .intro{display:none}
+body.dentro .hero-in{padding-block:20px 36px}
+body.dentro .marca{font-size:clamp(2.2rem,9vw,2.8rem)}
+body.dentro .brote{width:64px}
+@media (prefers-reduced-motion:no-preference){
+  .tallo{stroke-dasharray:90;stroke-dashoffset:90;animation:crece .9s .15s ease-out forwards}
+  .hoja-i,.hoja-d{transform-box:fill-box;transform:scale(0);animation:abre .6s ease-out forwards}
+  .hoja-i{transform-origin:100% 100%;animation-delay:.75s}
+  .hoja-d{transform-origin:0% 100%;animation-delay:.95s}
+  @keyframes crece{to{stroke-dashoffset:0}}
+  @keyframes abre{to{transform:scale(1)}}
+}
+
+/* Buscador */
+.barra{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--fondo)}
+.barra .ancho{padding-block:12px}
+.buscar{position:relative}
+.buscar input{width:100%;padding:15px 48px 15px 50px;border:1.5px solid var(--linea);border-radius:999px;background:var(--tarjeta);font-size:1.05rem;box-shadow:var(--sombra)}
+.buscar input::placeholder{color:var(--suave)}
+.buscar input:focus{border-color:var(--hoja);outline:none}
+.buscar input::-webkit-search-cancel-button{display:none}
+.buscar svg{position:absolute;left:18px;top:50%;transform:translateY(-50%);width:20px;height:20px;stroke:var(--hoja)}
+.limpiar{position:absolute;right:9px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:0;border-radius:999px;background:var(--tenue);cursor:pointer;font-size:1.15rem;line-height:1}
+
+/* Inicio: categorías */
+main .ancho{padding-block:6px 150px;display:flex;flex-direction:column;gap:28px}
+.preg{font-family:var(--display);font-weight:400;font-size:1.55rem;margin:4px 0 14px;text-wrap:balance}
+.pastillas{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pastilla{display:flex;align-items:center;gap:12px;min-height:74px;padding:12px 14px;border:0;border-radius:22px;cursor:pointer;text-align:left;color:var(--tinta);background:var(--t1);transition:transform .12s}
+.pastilla:nth-child(4n+2){background:var(--t2)}
+.pastilla:nth-child(4n+3){background:var(--t3)}
+.pastilla:nth-child(4n+4){background:var(--t4)}
+.pastilla .sem{flex:none;width:30px;height:30px;border-radius:50% 50% 50% 8px;background:var(--tarjeta);display:grid;place-items:center}
+.pastilla .sem svg{width:16px;height:16px}
+.pastilla .txt{display:flex;flex-direction:column;min-width:0}
+.pastilla b{font-weight:700;font-size:1rem;line-height:1.2}
+.pastilla small{font-size:.82rem;color:var(--suave);font-weight:500;margin-top:2px}
+.pastilla:active{transform:scale(.97)}
+@media (min-width:620px){.pastillas{grid-template-columns:repeat(3,1fr)}}
+
+/* Lista de productos */
+.vista{display:flex;flex-direction:column;gap:14px}
+.volver{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;border:1.5px solid var(--linea);background:var(--tarjeta);color:var(--tinta);border-radius:999px;padding:10px 18px 10px 14px;font-weight:700;cursor:pointer;box-shadow:var(--sombra)}
+.volver svg{width:18px;height:18px}
+.titulo-lista{font-family:var(--display);font-weight:400;font-size:1.8rem;line-height:1.15;margin:6px 0 0;text-wrap:balance}
+.cuantos{margin:-8px 0 2px;color:var(--suave);font-size:.92rem}
+.lista{display:flex;flex-direction:column;gap:10px}
+.prod{background:var(--tarjeta);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--sombra)}
+.prod h3{margin:0;font-size:1.05rem;font-weight:700;line-height:1.3}
+.prod .det{display:block;font-weight:500;font-size:.88rem;color:var(--suave);margin-top:3px}
+.prod .de{font-size:.8rem;font-weight:600;color:var(--hoja)}
+.opt{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;min-height:44px}
+.opt+.opt{border-top:1px dashed var(--linea);padding-top:10px}
+.pres{font-size:.84rem;font-weight:700;background:var(--tenue);border-radius:10px;padding:5px 9px;min-width:58px;text-align:center}
+.precio{font-variant-numeric:tabular-nums;font-weight:700;font-size:1.08rem}
+.sin{font-size:.85rem;font-weight:700;color:var(--error)}
+.agregar{border:1.5px solid var(--hoja);background:var(--tarjeta);color:var(--hoja);border-radius:999px;height:42px;padding:0 16px;font-weight:700;cursor:pointer;white-space:nowrap}
+.agregar:disabled{border-color:var(--linea);color:var(--suave);cursor:default}
+.paso{display:flex;align-items:center;border-radius:999px;background:var(--hoja);color:#FFFFFF}
+.paso button{width:42px;height:42px;border:0;background:none;color:inherit;font-size:1.3rem;font-weight:700;cursor:pointer;border-radius:999px}
+.paso output{min-width:22px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+.vacio{padding:26px;text-align:center;color:var(--suave);background:var(--tarjeta);border-radius:20px;margin:0}
+
+.pie{color:var(--suave);font-size:.92rem;display:flex;flex-direction:column;gap:6px;padding-top:18px;border-top:1px solid var(--linea)}
+.pie p{margin:0}
+.pie strong{color:var(--tinta)}
+.credito{margin-top:10px!important;font-size:.82rem}
+.credito a{color:inherit}
+
+/* Barra del pedido */
+.carrito{position:fixed;left:0;right:0;bottom:0;z-index:25;padding:10px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:linear-gradient(to top,var(--fondo) 60%,transparent)}
+.carrito button{display:flex;align-items:center;gap:12px;width:100%;max-width:688px;margin:0 auto;border:0;border-radius:999px;padding:10px 22px 10px 10px;background:var(--amarillo);color:var(--sobre-amarillo);font-weight:800;font-size:1.06rem;cursor:pointer;box-shadow:0 8px 22px rgb(10 75 67 / .22)}
+.carrito .n{display:grid;place-items:center;min-width:38px;height:38px;padding:0 8px;border-radius:999px;background:var(--marca);color:var(--amarillo);font-variant-numeric:tabular-nums}
+.carrito .tot{margin-left:auto;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:no-preference){.carrito:not([hidden]) button{animation:asoma .25s ease-out}@keyframes asoma{from{transform:translateY(16px)}to{transform:none}}}
+
+/* Hoja del pedido */
+.velo{position:fixed;inset:0;z-index:40;background:rgb(6 30 25 / .5);display:flex;align-items:flex-end;justify-content:center}
+.hoja{background:var(--fondo);width:100%;max-width:620px;max-height:94%;overflow-y:auto;border-radius:26px 26px 0 0;padding:10px max(18px,env(safe-area-inset-right,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:18px}
+.hoja::before{content:"";align-self:center;width:44px;height:5px;border-radius:9px;background:var(--linea)}
+@media (min-width:700px){.velo{align-items:center}.hoja{border-radius:26px;max-height:90%}.hoja::before{display:none}}
+@media (prefers-reduced-motion:no-preference){.hoja{animation:sube .24s ease-out}@keyframes sube{from{transform:translateY(28px)}to{transform:none}}}
+.hoja-cab{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.hoja h2{font-family:var(--display);font-weight:400;font-size:1.7rem;margin:0}
+.seguir{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--hoja);background:var(--tarjeta);color:var(--tinta);border-radius:999px;padding:9px 16px 9px 12px;font-weight:700;cursor:pointer}
+.seguir svg,.btn-seguir svg{width:18px;height:18px}
+.items{display:flex;flex-direction:column;background:var(--tarjeta);border-radius:20px;box-shadow:var(--sombra)}
+.item{display:grid;grid-template-columns:1fr auto;gap:4px 12px;padding:14px 16px;align-items:center}
+.item+.item{border-top:1px solid var(--linea)}
+.item .nom{font-weight:700;min-width:0}
+.item .sub{font-size:.88rem;color:var(--suave);font-variant-numeric:tabular-nums}
+.item .paso{grid-row:span 2}
+.total{display:flex;justify-content:space-between;align-items:baseline;font-weight:800;font-size:1.2rem;font-variant-numeric:tabular-nums;padding:0 6px}
+.total span:last-child{font-size:1.45rem}
+.aviso{font-size:.92rem;color:var(--suave);margin:-10px 6px 0}
+fieldset{border:0;margin:0;padding:0;display:flex;flex-direction:column;gap:16px}
+.etq{margin:0 0 8px;font-weight:700}
+label{display:flex;flex-direction:column;gap:6px;font-weight:700;font-size:.96rem}
+.campo{padding:13px 14px;border:1.5px solid var(--linea);border-radius:14px;background:var(--tarjeta);font-weight:400;font-size:1rem}
+.campo:focus{border-color:var(--hoja);outline:none}
+textarea.campo{resize:vertical;min-height:68px}
+.campo[aria-invalid="true"]{border-color:var(--error)}
+.err{color:var(--error);font-size:.9rem;font-weight:600}
+.opciones{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opciones label{flex-direction:row;align-items:center;gap:10px;border:1.5px solid var(--linea);border-radius:14px;padding:13px 14px;background:var(--tarjeta);cursor:pointer;font-weight:700}
+.opciones label:has(input:checked){border-color:var(--hoja);background:var(--tenue)}
+.opciones input{accent-color:var(--hoja);margin:0;width:18px;height:18px}
+.envio-cab{display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+.envio-cab h3{margin:0;font-size:1.12rem;font-weight:800}
+.clave{margin:0;background:var(--resalte);border-radius:16px;padding:12px 16px;font-size:1rem;line-height:1.4}
+.clave strong{font-weight:800}
+.enviar{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wa{display:flex;flex-direction:column;align-items:center;gap:3px;text-decoration:none;border-radius:20px;padding:16px 10px;background:var(--hoja);color:#FFFFFF;font-weight:800;font-size:1.06rem;text-align:center;box-shadow:0 6px 16px rgb(47 125 82 / .25)}
+.wa svg{width:22px;height:22px;margin-bottom:2px}
+.wa span{font-weight:500;font-size:.88rem;opacity:.92;font-variant-numeric:tabular-nums}
+.wa:active{transform:scale(.98)}
+.acciones{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding-top:16px;border-top:1px solid var(--linea)}
+.acciones button{display:inline-flex;align-items:center;justify-content:center;gap:6px;border-radius:999px;padding:13px 12px;font-weight:700;cursor:pointer;font-size:.98rem}
+.btn-seguir{border:1.5px solid var(--hoja);background:var(--tarjeta);color:var(--tinta)}
+.btn-vaciar{border:1.5px solid var(--error);background:var(--tarjeta);color:var(--error)}
+.confirmar{grid-column:1/-1;background:var(--peligro-fondo);border-radius:20px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.confirmar p{margin:0;font-weight:700}
+.confirmar div{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.btn-si{border:0;background:var(--error);color:#FFFFFF}
+</style>
+
+</head>
+<body>
+<header class="hero">
+  <span class="circulo" aria-hidden="true"></span><span class="circulo dos" aria-hidden="true"></span>
+  <div class="ancho hero-in">
+    <div>
+      <h1 class="marca">Brotes</h1>
+      <p class="lema">Tu solución saludable</p>
+      <p class="intro">Elegí tus productos y mandanos el pedido por WhatsApp. Te confirmamos disponibilidad, envío y forma de pago.</p>
+    </div>
+    <svg class="brote" viewBox="0 0 120 140" aria-hidden="true">
+      <path class="tallo" d="M60 136 C60 112 57 92 62 60" stroke="#B8D45A" stroke-width="7" fill="none" stroke-linecap="round"/>
+      <path class="hoja-i" d="M60 86 C38 88 18 72 14 46 C40 44 58 60 60 86Z" fill="#B8D45A"/>
+      <path class="hoja-d" d="M62 62 C64 34 86 14 112 16 C110 44 90 62 62 62Z" fill="#7DBE5A"/>
+    </svg>
+  </div>
+  <svg class="ola" viewBox="0 0 400 28" preserveAspectRatio="none" aria-hidden="true"><path d="M0 28 L0 14 C70 0 140 0 200 12 C260 24 330 26 400 8 L400 28 Z"/></svg>
+</header>
+
+<div class="barra"><div class="ancho">
+  <div class="buscar">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2.3" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <input id="buscar" type="search" placeholder="Buscá un producto, ej: chía" aria-label="Buscar un producto" autocomplete="off" enterkeyhint="search">
+    <button class="limpiar" id="limpiar" type="button" aria-label="Borrar búsqueda" hidden>×</button>
+  </div>
+</div></div>
+
+<main><div class="ancho">
+  <section id="inicio">
+    <h2 class="preg">¿Qué estás buscando?</h2>
+    <div class="pastillas" id="pastillas"></div>
+  </section>
+  <section id="vistaLista" class="vista" hidden>
+    <button class="volver" id="volver" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Todas las categorías</button>
+    <h2 class="titulo-lista" id="tituloLista"></h2>
+    <p class="cuantos" id="cuantos"></p>
+    <div id="productos"></div>
+  </section>
+  <footer class="pie">
+    <p><strong>¿No encontrás lo que buscás?</strong> Pedilo igual, lo conseguimos.</p>
+    <p>Pedidos por WhatsApp: Rodri 351 212-0352, Vero 351 268-1224. Hacemos envíos.</p>
+    <p class="credito" id="credito" hidden></p>
+  </footer>
+</div></main>
+
+<div class="carrito" id="carrito" hidden>
+  <button id="abrir" type="button"><span class="n" id="cuenta">0</span><span>Ver mi pedido</span><span class="tot" id="totBarra"></span></button>
+</div>
+
+<div class="velo" id="velo" hidden>
+  <section class="hoja" role="dialog" aria-modal="true" aria-labelledby="tituloPedido">
+    <div class="hoja-cab"><h2 id="tituloPedido">Tu pedido</h2><button class="seguir" id="seguirArriba" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Seguir comprando</button></div>
+    <div class="items" id="items"></div>
+    <div class="total"><span>Total estimado</span><span id="total"></span></div>
+    <p class="aviso">Te confirmamos por WhatsApp que esté todo disponible antes de cobrarte.</p>
+    <form id="datos" novalidate>
+      <fieldset>
+        <label for="nombre">Tu nombre
+          <input class="campo" id="nombre" name="nombre" autocomplete="name" required>
+          <span class="err" id="errNombre" hidden>Escribí tu nombre para saber de quién es el pedido.</span>
+        </label>
+        <div>
+          <p class="etq">¿Cómo lo recibís?</p>
+          <div class="opciones">
+            <label><input type="radio" name="entrega" id="envio" value="envio" checked> Envío</label>
+            <label><input type="radio" name="entrega" id="retiro" value="retiro"> Retiro</label>
+          </div>
+        </div>
+        <label for="direccion" id="lblDireccion">Dirección y barrio
+          <input class="campo" id="direccion" name="direccion" autocomplete="street-address" placeholder="Ej: Gral. Paz 123, Centro">
+        </label>
+        <label for="nota">Algo más (opcional)
+          <textarea class="campo" id="nota" name="nota" placeholder="Horario para recibir, un producto que no está en la lista…"></textarea>
+        </label>
+      </fieldset>
+    </form>
+    <div>
+      <div class="envio-cab">
+        <h3>¿A quién le mandás el pedido?</h3>
+        <p class="clave">Se abrirá WhatsApp con el pedido ya escrito. Luego <strong>SOLO TOCÁ ENVIAR</strong>.</p>
+      </div>
+      <div class="enviar" id="enviar"></div>
+    </div>
+    <div class="acciones" id="acciones">
+      <button class="btn-seguir" id="seguirAbajo" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>Seguir comprando</button>
+      <button class="btn-vaciar" id="vaciar" type="button">Vaciar pedido</button>
+      <div class="confirmar" id="confirmar" hidden>
+        <p>¿Seguro que querés borrar todo el pedido?</p>
+        <div><button class="btn-seguir" id="noVaciar" type="button">No, volver</button><button class="btn-si" id="siVaciar" type="button">Sí, vaciar</button></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+/* ===== CONFIGURACIÓN: lo único que hay que tocar ===== */
+const CONFIG = {
+  // Link de la planilla de Google publicada como CSV (Archivo > Compartir > Publicar en la Web > CSV).
+  // Si queda vacío, la tienda usa la lista de precios guardada acá abajo.
+  planilla: "",
+  whatsapp: [
+    { nombre: "Rodri", numero: "5493512120352", mostrar: "351 212-0352" },
+    { nombre: "Vero",  numero: "5493512681224", mostrar: "351 268-1224" }
+  ],
+  // Firma al pie de la página (opcional). Ej: { texto: "Diseño y desarrollo: Tu Nombre", link: "https://..." }
+  credito: { texto: "", link: "" }
+};
+/* Lista de respaldo: [categoría, producto, presentación, precio, disponible] */
+const RESPALDO = [["Avenas","Avena instantánea","1 kg",2531,"Sí"],["Avenas","Avena instantánea","½ kg",1266,"Sí"],["Avenas","Avena tradicional","1 kg",2419,"Sí"],["Avenas","Avena tradicional","½ kg",1209,"Sí"],["Avenas","Salvado de avena","1 kg",2700,"Sí"],["Avenas","Salvado de avena","½ kg",1322,"Sí"],["Harinas","Harina integral","1 kg",1912,"Sí"],["Harinas","Harina integral","½ kg",1378,"Sí"],["Harinas","Harina integral orgánica","1 kg",2756,"Sí"],["Harinas","Harina integral orgánica","½ kg",1266,"Sí"],["Harinas","Harina de arroz","1 kg",1755,"Sí"],["Harinas","Harina de arroz","½ kg",878,"Sí"],["Harinas","Harina de avena","1 kg",2586,"Sí"],["Harinas","Harina de avena","½ kg",1350,"Sí"],["Harinas","Harina de centeno","1 kg",2194,"Sí"],["Harinas","Harina de centeno","½ kg",1097,"Sí"],["Harinas","Harina de garbanzos","1 kg",2081,"Sí"],["Harinas","Harina de garbanzos","½ kg",1041,"Sí"],["Harinas","Harina de almendras nacional eco","1 kg",4500,"Sí"],["Harinas","Harina de almendras nacional eco","½ kg",2250,"Sí"],["Harinas","Harina de almendras importada","1 kg",42862,"Sí"],["Harinas","Harina de almendras importada","½ kg",21431,"Sí"],["Harinas","Harina de coco","5 kg",46069,"Sí"],["Harinas","Harina de coco","1 kg",10238,"Sí"],["Harinas","Harina de coco","½ kg",5119,"Sí"],["Legumbres y arroces","Arroz yamaní integral","1 kg",2700,"Sí"],["Legumbres y arroces","Arroz yamaní integral","½ kg",1350,"Sí"],["Legumbres y arroces","Arroz integral largo fino","1 kg",1856,"Sí"],["Legumbres y arroces","Arroz integral largo fino","½ kg",928,"Sí"],["Legumbres y arroces","Garbanzos","1 kg",2138,"Sí"],["Legumbres y arroces","Garbanzos","½ kg",1069,"Sí"],["Legumbres y arroces","Lentejas","1 kg",3555,"Sí"],["Legumbres y arroces","Lentejas","½ kg",1778,"Sí"],["Legumbres y arroces","Poroto alubia","1 kg",2138,"Sí"],["Legumbres y arroces","Poroto alubia","½ kg",1069,"Sí"],["Legumbres y arroces","Poroto negro","1 kg",3094,"Sí"],["Legumbres y arroces","Poroto negro","½ kg",1547,"Sí"],["Legumbres y arroces","Poroto colorado","1 kg",3330,"Sí"],["Legumbres y arroces","Poroto colorado","½ kg",1665,"Sí"],["Legumbres y arroces","Poroto pallares","1 kg",9225,"Sí"],["Legumbres y arroces","Poroto pallares","½ kg",4612,"Sí"],["Legumbres y arroces","Maíz partido","1 kg",2362,"Sí"],["Legumbres y arroces","Maíz partido","½ kg",1181,"Sí"],["Legumbres y arroces","Maíz pisingallo","1 kg",2081,"Sí"],["Legumbres y arroces","Maíz pisingallo","½ kg",1041,"Sí"],["Legumbres y arroces","Arvejas enteras","1 kg",1676,"Sí"],["Legumbres y arroces","Arvejas enteras","½ kg",838,"Sí"],["Semillas","Girasol","1 kg",4950,"Sí"],["Semillas","Girasol","½ kg",2475,"Sí"],["Semillas","Lino","1 kg",4387,"Sí"],["Semillas","Lino","½ kg",2194,"Sí"],["Semillas","Chía","1 kg",9000,"Sí"],["Semillas","Chía","½ kg",4500,"Sí"],["Semillas","Quinoa blanca","1 kg",12488,"Sí"],["Semillas","Quinoa blanca","½ kg",6244,"Sí"],["Semillas","Mijo","1 kg",4106,"Sí"],["Semillas","Mijo","½ kg",2053,"Sí"],["Semillas","Sésamo blanco","1 kg",9169,"Sí"],["Semillas","Sésamo blanco","½ kg",4584,"Sí"],["Semillas","Sésamo integral","1 kg",3488,"Sí"],["Semillas","Sésamo integral","½ kg",1744,"Sí"],["Semillas","Semillas de zapallo","1 kg",27000,"Sí"],["Semillas","Semillas de zapallo","½ kg",13500,"Sí"],["Frutos secos","Almendras Non Pareil","1 kg",37969,"Sí"],["Frutos secos","Almendras Non Pareil","½ kg",18984,"Sí"],["Frutos secos","Almendras Guara","1 kg",34537,"Sí"],["Frutos secos","Almendras Guara","½ kg",17269,"Sí"],["Frutos secos","Castañas de cajú W4 (Brasil)","1 kg",27788,"Sí"],["Frutos secos","Castañas de cajú W4 (Brasil)","½ kg",13894,"Sí"],["Frutos secos","Avellanas","1 kg",57375,"Sí"],["Frutos secos","Avellanas","½ kg",28687,"Sí"],["Frutos secos","Pistachos","1 kg",61425,"Sí"],["Frutos secos","Pistachos","½ kg",30712,"Sí"],["Frutos secos","Maní sin sal","1 kg",5119,"Sí"],["Frutos secos","Maní sin sal","½ kg",2559,"Sí"],["Frutos secos","Maní con sal","1 kg",5119,"Sí"],["Frutos secos","Maní con sal","½ kg",2362,"Sí"],["Frutos secos","Maní crudo","1 kg",4668,"Sí"],["Frutos secos","Maní crudo","½ kg",2334,"Sí"],["Frutos secos","Maní con cáscara","1 kg",6210,"Sí"],["Frutos secos","Maní con cáscara","½ kg",3105,"Sí"],["Frutos secos","Nuez entera extra light","1 kg",29025,"Sí"],["Frutos secos","Nuez entera extra light","½ kg",14512,"Sí"],["Frutos secos","Nuez partida light","1 kg",26156,"Sí"],["Frutos secos","Nuez partida light","½ kg",13078,"Sí"],["Frutos secos","Nuez entera cobriza","1 kg",21600,"Sí"],["Frutos secos","Nuez entera cobriza","½ kg",10800,"Sí"],["Frutos secos","Nuez con cáscara","2,5 kg",27945,"Sí"],["Frutos secos","Nuez con cáscara","1 kg",11644,"Sí"],["Frutos secos","Nuez con cáscara","½ kg",5822,"Sí"],["Frutos secos","Mix clásico (castañas, almendras, nuez, pasas de uva negras y rubias, maní)","1 kg",15075,"Sí"],["Frutos secos","Mix clásico (castañas, almendras, nuez, pasas de uva negras y rubias, maní)","½ kg",7538,"Sí"],["Frutos secos","Mix energía (castañas, almendras, nuez, pasas de uva rubias y negras)","1 kg",17888,"Sí"],["Frutos secos","Mix energía (castañas, almendras, nuez, pasas de uva rubias y negras)","½ kg",8944,"Sí"],["Frutos secos","Mix tropical (castañas, almendras, nuez, pasas rubias y negras, maní, bananitas chips, ananá y papaya glaseada)","1 kg",15750,"Sí"],["Frutos secos","Mix tropical (castañas, almendras, nuez, pasas rubias y negras, maní, bananitas chips, ananá y papaya glaseada)","½ kg",7875,"Sí"],["Frutos secos","Mix frutos secos con maní (castañas, almendras, nuez, maní)","1 kg",20475,"Sí"],["Frutos secos","Mix frutos secos con maní (castañas, almendras, nuez, maní)","½ kg",10238,"Sí"],["Frutos secos","Mix frutos secos sin maní (castañas, almendras y nuez)","1 kg",30206,"Sí"],["Frutos secos","Mix frutos secos sin maní (castañas, almendras y nuez)","½ kg",15103,"Sí"],["Frutos secos","Mix coco (castañas, almendras, nuez, maní, pasas de arándanos y coco en escamas)","1 kg",21825,"Sí"],["Frutos secos","Mix coco (castañas, almendras, nuez, maní, pasas de arándanos y coco en escamas)","½ kg",10912,"Sí"],["Frutos secos","Mix salado con almendras","1 kg",13725,"Sí"],["Frutos secos","Mix salado con almendras","½ kg",6862,"Sí"],["Frutas disecadas","Pasas de arándanos","1 kg",28238,"Sí"],["Frutas disecadas","Pasas de arándanos","½ kg",14155,"Sí"],["Frutas disecadas","Dátiles de Egipto","1 kg",10631,"Sí"],["Frutas disecadas","Dátiles de Egipto","½ kg",5316,"Sí"],["Frutas disecadas","Duraznos","1 kg",19406,"Sí"],["Frutas disecadas","Duraznos","½ kg",9703,"Sí"],["Frutas disecadas","Peras","1 kg",17719,"Sí"],["Frutas disecadas","Peras","½ kg",8859,"Sí"],["Frutas disecadas","Higos","1 kg",18394,"Sí"],["Frutas disecadas","Higos","½ kg",9197,"Sí"],["Frutas disecadas","Ciruelas Dagen","1 kg",12488,"Sí"],["Frutas disecadas","Ciruelas Dagen","½ kg",6244,"Sí"],["Frutas disecadas","Ciruelas presidente","1 kg",20081,"Sí"],["Frutas disecadas","Ciruelas presidente","½ kg",10041,"Sí"],["Frutas disecadas","Pasas de uva negras sin semilla","1 kg",6581,"Sí"],["Frutas disecadas","Pasas de uva negras sin semilla","½ kg",3291,"Sí"],["Frutas disecadas","Pasas de uva rubias sin semilla","1 kg",12319,"Sí"],["Frutas disecadas","Pasas de uva rubias sin semilla","½ kg",6159,"Sí"],["Frutas disecadas","Tomates secos","1 kg",21825,"Sí"],["Frutas disecadas","Tomates secos","½ kg",10912,"Sí"],["Frutas disecadas","Hongos de pino","1 kg",48938,"Sí"],["Frutas disecadas","Hongos de pino","½ kg",24469,"Sí"],["Repostería","Coco rallado","1 kg",15019,"Sí"],["Repostería","Coco rallado","½ kg",7509,"Sí"],["Repostería","Coco en escamas","1 kg",22500,"Sí"],["Repostería","Coco en escamas","½ kg",11250,"Sí"],["Repostería","Leche de coco en polvo","1 kg",32625,"Sí"],["Repostería","Leche de coco en polvo","½ kg",16312,"Sí"],["Repostería","Cacao amargo","1 kg",18000,"Sí"],["Repostería","Cacao amargo","½ kg",9000,"Sí"],["Repostería","Azúcar mascabo Balajú","1 kg",7651,"Sí"],["Repostería","Azúcar mascabo Balajú","½ kg",3825,"Sí"],["Productos sin TACC","Premezcla Dimax x 1 kg","Unidad",7254,"Sí"],["Productos sin TACC","Premezcla Dimax x ½ kg","Unidad",3861,"Sí"],["Productos sin TACC","Fécula de mandioca Dimax x 1 kg","Unidad",6096,"Sí"],["Productos sin TACC","Fécula de mandioca Dimax x ½ kg","Unidad",3510,"Sí"],["Productos sin TACC","Almidón de maíz Dimax x 1 kg","Unidad",4622,"Sí"],["Productos sin TACC","Almidón de maíz Dimax x ½ kg","Unidad",2738,"Sí"],["Productos sin TACC","Fécula de mandioca Montecarlo x 1 kg","Unidad",4832,"Sí"],["Sales y suplementos","Sal del Himalaya fina","1 kg",3094,"Sí"],["Sales y suplementos","Sal del Himalaya fina","½ kg",1547,"Sí"],["Sales y suplementos","Sal del Himalaya gruesa","1 kg",4320,"Sí"],["Sales y suplementos","Sal del Himalaya gruesa","½ kg",2160,"Sí"],["Sales y suplementos","Sal marina fina x 500 g","Unidad",2959,"Sí"],["Sales y suplementos","Sal marina gruesa x 500 g","Unidad",2959,"Sí"],["Sales y suplementos","Vita Biosa (natural, frutilla o naranja)","Unidad",26055,"Sí"],["Sales y suplementos","Maca peruana blanca x 500 g","Unidad",2362,"Sí"],["Sales y suplementos","Maca peruana negra x 150 g","Unidad",2182,"Sí"],["Sales y suplementos","Colágeno instantáneo x 100 g","Unidad",1012,"Sí"],["Sales y suplementos","Moringa en polvo x 100 g","Unidad",1012,"Sí"],["Sales y suplementos","Graviola en polvo x 100 g","Unidad",1001,"Sí"],["Sales y suplementos","Cartílago de tiburón en polvo x 100 g","Unidad",1012,"Sí"],["Sales y suplementos","Salsa de soja suave x ½ L","Unidad",5726,"Sí"],["Sales y suplementos","Salsa de soja suave x 1 L","Unidad",10170,"Sí"],["Sales y suplementos","Salsa de soja fuerte x ½ L","Unidad",6412,"Sí"],["Sales y suplementos","Salsa de soja fuerte x 1 L","Unidad",11160,"Sí"],["Aceites","Aceite de oliva Olivia x 1 L","Unidad",10489,"Sí"],["Aceites","Aceite de oliva Il Olivo x ½ L","Unidad",4219,"Sí"],["Aceites","Aceite de oliva Il Olivo x 1 L","Unidad",8438,"Sí"],["Aceites","Aceite de oliva d’Aguirre x ¼ L","Unidad",9158,"Sí"],["Aceites","Aceite de oliva d’Aguirre x ½ L","Unidad",16436,"Sí"],["Aceites","Aceite de coco neutro x 180 ml","Unidad",6581,"Sí"],["Aceites","Aceite de coco neutro x 360 ml","Unidad",10721,"Sí"],["Aceites","Aceite de coco neutro x 660 ml","Unidad",18731,"Sí"],["Aceites","Aceite de coco virgen x 180 ml","Unidad",9619,"Sí"],["Aceites","Aceite de coco virgen x 360 ml","Unidad",16875,"Sí"],["Aceites","Aceite de coco virgen x 660 ml","Unidad",28856,"Sí"],["Granolas, chalitas y galletas","Granola Satvika crocante","Unidad",9450,"Sí"],["Granolas, chalitas y galletas","Granola Satvika con pasta de maní","Unidad",9450,"Sí"],["Granolas, chalitas y galletas","Granola Satvika tropical","Unidad",10969,"Sí"],["Granolas, chalitas y galletas","Granola Kimun crocante","1 kg",11259,"Sí"],["Granolas, chalitas y galletas","Granola Kimun crocante","½ kg",5630,"Sí"],["Granolas, chalitas y galletas","Granola Kimun premium","1 kg",18875,"Sí"],["Granolas, chalitas y galletas","Granola Kimun premium","½ kg",8438,"Sí"],["Granolas, chalitas y galletas","Chalitas de harina integral orgánica Kimun","1 kg",19125,"Sí"],["Granolas, chalitas y galletas","Chalitas de harina integral orgánica Kimun","½ kg",9562,"Sí"],["Granolas, chalitas y galletas","Galletas de arroz con miel y avena","1 kg",20700,"Sí"],["Granolas, chalitas y galletas","Galletas de arroz con miel y avena","½ kg",10350,"Sí"],["Granolas, chalitas y galletas","Galletas de arroz con arándanos","1 kg",22950,"Sí"],["Granolas, chalitas y galletas","Galletas de arroz con arándanos","½ kg",11475,"Sí"],["Granolas, chalitas y galletas","Tostadas de arroz clásicas Molinos del Bosque x 150 g","Unidad",3341,"Sí"],["Cereales","Copos de maíz sin azúcar","1 kg",6975,"Sí"],["Cereales","Copos de maíz sin azúcar","½ kg",3487,"Sí"],["Cereales","Copos de maíz con azúcar","1 kg",8325,"Sí"],["Cereales","Copos de maíz con azúcar","½ kg",4162,"Sí"],["Cereales","Ositos de avena y miel","2 kg",17820,"Sí"],["Cereales","Ositos de avena y miel","1 kg",9900,"Sí"],["Cereales","Ositos de avena y miel","½ kg",4950,"Sí"],["Cereales","Ositos de frutilla","2 kg",17921,"Sí"],["Cereales","Ositos de frutilla","1 kg",9956,"Sí"],["Cereales","Ositos de frutilla","½ kg",4978,"Sí"],["Cereales","Bastoncitos de salvado (fibritas)","2,5 kg",18478,"Sí"],["Cereales","Bastoncitos de salvado (fibritas)","1 kg",8212,"Sí"],["Cereales","Bastoncitos de salvado (fibritas)","½ kg",4106,"Sí"],["Cereales","Tutucas con azúcar","1 kg",5602,"Sí"],["Cereales","Tutucas con azúcar","½ kg",2801,"Sí"],["Cereales","Tutucas con stevia","1 kg",8100,"Sí"],["Cereales","Tutucas con stevia","½ kg",4050,"Sí"],["Cereales","Arroz inflado con azúcar","1 kg",12488,"Sí"],["Cereales","Arroz inflado con azúcar","½ kg",6244,"Sí"],["Cereales","Almohaditas rellenas (frutilla, limón o avellanas)","2,5 kg",29362,"Sí"],["Cereales","Almohaditas rellenas (frutilla, limón o avellanas)","1 kg",13050,"Sí"],["Cereales","Almohaditas rellenas (frutilla, limón o avellanas)","½ kg",6525,"Sí"],["Yerbas","Yerba Tucangua empaquetada x ½ kg","Unidad",3696,"Sí"],["Yerbas","Yerba Tucangua empaquetada x 1 kg","Unidad",5447,"Sí"],["Yerbas","Yerba Tucangua empaquetada x 2 kg","Unidad",10800,"Sí"],["Yerbas","Yerba Tucangua empaquetada x 5 kg","Unidad",23625,"Sí"],["Yerbas","Yerba Tucangua empaquetada x 10 kg","Unidad",44888,"Sí"],["Yerbas","Yerba Tucangua empaquetada x 20 kg","Unidad",86738,"Sí"],["Yerbas","Yerba Tucangua canchada x 1 kg","Unidad",5771,"Sí"],["Yerbas","Yerba Tucangua orgánica empaquetada x 1 kg","Unidad",9811,"Sí"],["Yerbas","Yerba Grapia empaquetada x ½ kg","Unidad",3341,"Sí"],["Yerbas","Yerba Grapia empaquetada x 1 kg","Unidad",6075,"Sí"],["Yerbas","Yerba Grapia empaquetada x 2 kg","Unidad",11239,"Sí"],["Yerbas","Yerba Grapia canchada empaquetada x 2 kg","Unidad",9416,"Sí"],["Yerbas","Yerba Las Tunas empaquetada x ½ kg","Unidad",2936,"Sí"],["Yerbas","Yerba Las Tunas empaquetada x 1 kg","Unidad",5569,"Sí"],["Yerbas","Yerba Las Tunas canchada empaquetada x ½ kg","Unidad",2835,"Sí"],["Yerbas","Yerba Pampa orgánica x ½ kg","Unidad",5852,"Sí"],["Yerbas","Yerba Pampa intensa orgánica x ½ kg","Unidad",5852,"Sí"],["Yerbas","Yerba Jactancia suelta x 1 kg","Unidad",12555,"Sí"],["Yerbas","Yerba Jactancia suelta x ½ kg","Unidad",6278,"Sí"],["Yerbas","Yerba Jactancia empaquetada x 1 kg","Unidad",13162,"Sí"],["Yerbas","Yerba Jactancia empaquetada x ½ kg","Unidad",7088,"Sí"],["Yerbas","Yerba Picada Vieja Barbacuá x ½ kg","Unidad",3878,"Sí"],["Yerbas","Yerba Kalena Azul (despalada) x ½ kg","Unidad",6095,"Sí"],["Yerbas","Yerba Kalena Azul (despalada) x 2 kg","Unidad",23409,"Sí"],["Yerbas","Yerba Kalena Roja (con palo) x ½ kg","Unidad",5032,"Sí"],["Yerbas","Yerba Kalena Roja (con palo) x 2 kg","Unidad",19177,"Sí"],["Mieles, mermeladas y untables","Miel Valle del Sol x 500 g","Unidad",4718,"Sí"],["Mieles, mermeladas y untables","Miel Valle del Sol x 1 kg","Unidad",9092,"Sí"],["Mieles, mermeladas y untables","Miel El Árbol x 1 kg","Unidad",12938,"Sí"],["Mieles, mermeladas y untables","Miel El Árbol x 500 g","Unidad",9225,"Sí"],["Mieles, mermeladas y untables","Miel El Árbol x 300 g","Unidad",6581,"Sí"],["Mieles, mermeladas y untables","Pasta de maní King x 245 g","Unidad",3622,"Sí"],["Mieles, mermeladas y untables","Pasta de maní King x 485 g","Unidad",5220,"Sí"],["Mieles, mermeladas y untables","Pasta de maní King x 1 kg","Unidad",9596,"Sí"],["Mieles, mermeladas y untables","Mermelada sin azúcar agregada Las Quinas (damasco, durazno, naranja, ciruela o pera)","Unidad",10294,"Sí"],["Condimentos","Cebolla en escamas","½ kg",15206,"Sí"],["Condimentos","Nuez moscada entera","½ kg",43284,"Sí"],["Condimentos","Ajo en polvo","½ kg",8942,"Sí"],["Condimentos","Ajo granulado","½ kg",15605,"Sí"],["Condimentos","Nuez moscada en polvo","½ kg",30071,"Sí"],["Condimentos","Pimienta negra en polvo","½ kg",6094,"Sí"],["Condimentos","Comino","½ kg",6607,"Sí"],["Condimentos","Curry","½ kg",14808,"Sí"],["Condimentos","Polvo para hornear","½ kg",5512,"Sí"],["Condimentos","Condimento para pizza","½ kg",5695,"Sí"],["Condimentos","Pimentón","½ kg",6265,"Sí"],["Condimentos","Ají molido","½ kg",6151,"Sí"],["Condimentos","Jengibre en polvo","½ kg",14523,"Sí"],["Condimentos","Pimienta blanca en polvo","½ kg",9853,"Sí"],["Condimentos","Bicarbonato","½ kg",1993,"Sí"],["Condimentos","Clavo de olor","½ kg",45107,"Sí"],["Condimentos","Canela en polvo","½ kg",8258,"Sí"],["Condimentos","Provenzal","½ kg",9467,"Sí"],["Condimentos","Orégano","½ kg",4556,"Sí"],["Condimentos","Mostaza molida","½ kg",7358,"Sí"],["Condimentos","Pimienta de cayena","½ kg",14751,"Sí"],["Condimentos","Romero","½ kg",13954,"Sí"],["Condimentos","Mostaza en grano","½ kg",10764,"Sí"],["Condimentos","Tomillo","½ kg",13954,"Sí"],["Condimentos","Paprika","½ kg",11675,"Sí"],["Condimentos","Laurel en hojas","½ kg",26085,"Sí"],["Condimentos","Canela en rama","½ kg",58605,"Sí"]];
+
+const $ = s => document.querySelector(s);
+const pesos = n => "$ " + new Intl.NumberFormat("es-AR", { maximumFractionDigits: 0 }).format(Math.round(n));
+const norm = s => String(s).normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim();
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const clave = (p, pr) => p + "|" + pr;
+const plural = n => `${n} ${n === 1 ? "producto" : "productos"}`;
+const HOJITA = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19C5 10 11 5 20 4c0 9-5 15-14 15z" fill="#7DBE5A"/><path d="M5 19c3-4 6-7 10-10" stroke="#2F7D52" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>`;
+const ICONO_WA = `<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6a2.6 2.6 0 0 0 1.7-1.2 2.1 2.1 0 0 0 .2-1.2c-.1-.2-.3-.3-.5-.4z"/></svg>`;
+
+let productos = [];   // {cat, nombre, opciones:[{pres, precio, hay}]}
+let catActual = null; // categoría abierta, o null en el inicio
+let pedido = {};      // clave -> cantidad
+try { pedido = JSON.parse(localStorage.getItem("brotes-pedido") || "{}") || {}; } catch (e) { pedido = {}; }
+const guardar = () => { try { localStorage.setItem("brotes-pedido", JSON.stringify(pedido)); } catch (e) {} };
+
+function leerPrecio(v) {
+  let s = String(v ?? "").replace(/[^\d.,]/g, "");
+  if (!s) return NaN;
+  const coma = s.lastIndexOf(","), punto = s.lastIndexOf(".");
+  if (coma >= 0 && punto >= 0) s = coma > punto ? s.replace(/\./g, "").replace(",", ".") : s.replace(/,/g, "");
+  else if (/^\d{1,3}([.,]\d{3})+$/.test(s)) s = s.replace(/[.,]/g, "");
+  else s = s.replace(",", ".");
+  return parseFloat(s);
+}
+function leerCSV(texto) {
+  const filas = []; let fila = [], celda = "", comillas = false;
+  for (let i = 0; i < texto.length; i++) {
+    const c = texto[i];
+    if (comillas) {
+      if (c === '"' && texto[i + 1] === '"') { celda += '"'; i++; }
+      else if (c === '"') comillas = false;
+      else celda += c;
+    } else if (c === '"') comillas = true;
+    else if (c === ",") { fila.push(celda); celda = ""; }
+    else if (c === "\n" || c === "\r") {
+      if (c === "\r" && texto[i + 1] === "\n") i++;
+      fila.push(celda); filas.push(fila); fila = []; celda = "";
+    } else celda += c;
+  }
+  if (celda || fila.length) { fila.push(celda); filas.push(fila); }
+  return filas;
+}
+function desdeFilas(filas) {
+  const orden = [], porNombre = new Map();
+  for (const [cat, nombre, pres, precioTxt, disp] of filas) {
+    if (!cat || !nombre) continue;
+    const precio = leerPrecio(precioTxt);
+    if (!(precio > 0)) continue;
+    const k = cat.trim() + "|" + nombre.trim();
+    if (!porNombre.has(k)) { const p = { cat: cat.trim(), nombre: nombre.trim(), opciones: [] }; porNombre.set(k, p); orden.push(p); }
+    porNombre.get(k).opciones.push({ pres: String(pres || "Unidad").trim(), precio, hay: norm(disp || "si") !== "no" });
+  }
+  return orden;
+}
+function desdeCSV(texto) {
+  const filas = leerCSV(texto).filter(f => f.some(c => c.trim()));
+  if (!filas.length) return [];
+  const enc = filas[0].map(norm);
+  const col = n => enc.findIndex(h => h.startsWith(n));
+  const ix = [col("categ"), col("produc"), col("present"), col("precio"), col("dispon")];
+  if (ix[0] < 0 || ix[1] < 0 || ix[3] < 0) return [];
+  return desdeFilas(filas.slice(1).map(f => ix.map(i => (i < 0 ? "" : f[i] ?? ""))));
+}
+function buscarOpcion(k) {
+  const [n, pr] = k.split("|");
+  for (const p of productos) if (p.nombre === n) for (const o of p.opciones) if (o.pres === pr) return { p, o };
+  return null;
+}
+function lineas() {
+  const out = [];
+  for (const [k, cant] of Object.entries(pedido)) {
+    const r = buscarOpcion(k);
+    if (!r || !r.o.hay || !(cant > 0)) continue;
+    out.push({ k, cant, nombre: r.p.nombre, pres: r.o.pres, precio: r.o.precio, sub: cant * r.o.precio });
+  }
+  return out;
+}
+function partirNombre(n) {
+  const i = n.indexOf(" (");
+  return i > 0 && n.endsWith(")") ? [n.slice(0, i), n.slice(i + 2, -1)] : [n, ""];
+}
+function contador(k, cant, etiqueta) {
+  return `<div class="paso">
+    <button type="button" data-k="${esc(k)}" data-d="-1" aria-label="Quitar ${esc(etiqueta)}">−</button>
+    <output aria-live="polite">${cant}</output>
+    <button type="button" data-k="${esc(k)}" data-d="1" aria-label="Agregar ${esc(etiqueta)}">+</button></div>`;
+}
+function control(k, cant, etiqueta, hay) {
+  if (!hay) return `<button class="agregar" type="button" disabled>Agregar</button>`;
+  if (!cant) return `<button class="agregar" type="button" data-k="${esc(k)}" data-d="1" aria-label="Agregar ${esc(etiqueta)}">Agregar</button>`;
+  return contador(k, cant, etiqueta);
+}
+function categorias() {
+  const cats = [];
+  for (const p of productos) {
+    let c = cats.find(x => x.nombre === p.cat);
+    if (!c) { c = { nombre: p.cat, n: 0 }; cats.push(c); }
+    c.n++;
+  }
+  return cats;
+}
+function tarjeta(p, conCategoria) {
+  const [titulo, det] = partirNombre(p.nombre);
+  return `<article class="prod">${conCategoria ? `<span class="de">${esc(p.cat)}</span>` : ""}
+    <h3>${esc(titulo)}${det ? `<span class="det">${esc(det)}</span>` : ""}</h3>
+    ${p.opciones.map(o => {
+      const k = clave(p.nombre, o.pres), cant = pedido[k] || 0;
+      return `<div class="opt"><span class="pres">${esc(o.pres)}</span>
+        ${o.hay ? `<span class="precio">${pesos(o.precio)}</span>` : `<span class="sin">Sin stock</span>`}
+        ${control(k, cant, `${o.pres} de ${p.nombre}`, o.hay)}</div>`;
+    }).join("")}</article>`;
+}
+
+function dibujarCatalogo() {
+  const texto = $("#buscar").value.trim(), q = norm(texto);
+  $("#limpiar").hidden = !texto;
+  const enInicio = !q && !catActual;
+  $("#inicio").hidden = !enInicio;
+  $("#vistaLista").hidden = enInicio;
+  document.body.classList.toggle("dentro", !enInicio);
+  if (enInicio) {
+    $("#pastillas").innerHTML = categorias().map(c =>
+      `<button class="pastilla" type="button" data-cat="${esc(c.nombre)}"><span class="sem">${HOJITA}</span><span class="txt"><b>${esc(c.nombre)}</b><small>${plural(c.n)}</small></span></button>`).join("");
+    return;
+  }
+  const lista = q ? productos.filter(p => norm(p.nombre + " " + p.cat).includes(q)) : productos.filter(p => p.cat === catActual);
+  $("#tituloLista").textContent = q ? `Resultados para “${texto}”` : catActual;
+  $("#cuantos").textContent = plural(lista.length);
+  $("#cuantos").hidden = !lista.length;
+  $("#productos").innerHTML = lista.length
+    ? `<div class="lista">${lista.map(p => tarjeta(p, !!q)).join("")}</div>`
+    : `<p class="vacio">No encontramos “${esc(texto)}”. Escribinos igual por WhatsApp: lo conseguimos.</p>`;
+}
+
+function mensaje(destino) {
+  const ls = lineas(), total = ls.reduce((a, l) => a + l.sub, 0);
+  const nombre = $("#nombre").value.trim(), envio = $("#envio").checked;
+  const dir = $("#direccion").value.trim(), nota = $("#nota").value.trim();
+  let m = `¡Hola ${destino}! Quiero hacer este pedido en Brotes:\n\n`;
+  m += ls.map(l => `• ${l.cant} × ${l.nombre} (${l.pres}) — ${pesos(l.sub)}`).join("\n");
+  m += `\n\n*Total estimado: ${pesos(total)}*\n\n`;
+  m += `Nombre: ${nombre || "-"}\n`;
+  m += envio ? `Entrega: envío a ${dir || "(dirección a coordinar)"}\n` : "Entrega: retiro\n";
+  if (nota) m += `Nota: ${nota}\n`;
+  m += "\n¿Me confirmás si está todo disponible? ¡Gracias!";
+  return m;
+}
+
+function dibujarPedido() {
+  const ls = lineas(), total = ls.reduce((a, l) => a + l.sub, 0), unidades = ls.reduce((a, l) => a + l.cant, 0);
+  $("#carrito").hidden = !ls.length;
+  $("#cuenta").textContent = unidades;
+  $("#abrir").setAttribute("aria-label", `Ver mi pedido: ${plural(unidades)}, ${pesos(total)}`);
+  $("#totBarra").textContent = pesos(total);
+  $("#total").textContent = pesos(total);
+  $("#items").innerHTML = ls.map(l => `<div class="item"><span class="nom">${esc(l.nombre)}</span>${contador(l.k, l.cant, `${l.pres} de ${l.nombre}`)}
+    <span class="sub">${esc(l.pres)} · ${l.cant} × ${pesos(l.precio)} = ${pesos(l.sub)}</span></div>`).join("");
+  $("#lblDireccion").hidden = !$("#envio").checked;
+  $("#enviar").innerHTML = CONFIG.whatsapp.map(w =>
+    `<a class="wa" target="_blank" rel="noopener" data-wa="${esc(w.nombre)}" href="https://wa.me/${w.numero}?text=${encodeURIComponent(mensaje(w.nombre))}">${ICONO_WA}Enviar a ${esc(w.nombre)}<span>${esc(w.mostrar)}</span></a>`).join("");
+  if (!ls.length) cerrar();
+}
+
+function cambiar(k, d) {
+  const n = Math.max(0, (pedido[k] || 0) + d);
+  if (n) pedido[k] = n; else delete pedido[k];
+  guardar(); dibujarCatalogo(); dibujarPedido();
+}
+function mostrarConfirmar(si) {
+  $("#confirmar").hidden = !si; $("#vaciar").hidden = si; $("#seguirAbajo").hidden = si;
+  if (si) $("#noVaciar").focus();
+}
+function abrir() { mostrarConfirmar(false); $("#velo").hidden = false; document.body.style.overflow = "hidden"; $("#seguirArriba").focus(); }
+function cerrar() { $("#velo").hidden = true; document.body.style.overflow = ""; }
+function irA(cat) {
+  catActual = cat; $("#buscar").value = "";
+  if (cat) { try { history.pushState({ cat }, ""); } catch (e) {} }
+  dibujarCatalogo(); window.scrollTo(0, 0);
+}
+function alInicio() {
+  const habiaCat = !!catActual;
+  catActual = null; $("#buscar").value = "";
+  dibujarCatalogo(); window.scrollTo(0, 0);
+  if (habiaCat) { try { if (history.state && history.state.cat) history.back(); } catch (e) {} }
+}
+
+document.addEventListener("click", e => {
+  const b = e.target.closest("button[data-k]");
+  if (b) {
+    const donde = b.closest("#velo") ? "#items" : "#productos";
+    const k = b.dataset.k, d = b.dataset.d;
+    cambiar(k, +d);
+    const otro = $(`${donde} button[data-k="${CSS.escape(k)}"][data-d="${d}"]`) || $(`${donde} button[data-k="${CSS.escape(k)}"]`);
+    if (otro) otro.focus();
+    return;
+  }
+  const pas = e.target.closest("button[data-cat]");
+  if (pas) { irA(pas.dataset.cat); return; }
+  const wa = e.target.closest("a[data-wa]");
+  if (wa && !$("#nombre").value.trim()) {
+    e.preventDefault();
+    $("#errNombre").hidden = false; $("#nombre").setAttribute("aria-invalid", "true"); $("#nombre").focus();
+  }
+});
+window.addEventListener("popstate", () => { if (!$("#velo").hidden) cerrar(); catActual = (history.state && history.state.cat) || null; dibujarCatalogo(); window.scrollTo(0, 0); });
+$("#volver").addEventListener("click", alInicio);
+$("#limpiar").addEventListener("click", () => { $("#buscar").value = ""; dibujarCatalogo(); $("#buscar").focus(); });
+$("#abrir").addEventListener("click", abrir);
+$("#seguirArriba").addEventListener("click", cerrar);
+$("#seguirAbajo").addEventListener("click", cerrar);
+$("#velo").addEventListener("click", e => { if (e.target.id === "velo") cerrar(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("#velo").hidden) cerrar(); });
+$("#vaciar").addEventListener("click", () => mostrarConfirmar(true));
+$("#noVaciar").addEventListener("click", () => { mostrarConfirmar(false); $("#vaciar").focus(); });
+$("#siVaciar").addEventListener("click", () => { pedido = {}; guardar(); dibujarCatalogo(); dibujarPedido(); });
+$("#buscar").addEventListener("input", () => { if ($("#buscar").value.trim()) catActual = null; dibujarCatalogo(); });
+$("#datos").addEventListener("input", () => {
+  if ($("#nombre").value.trim()) { $("#errNombre").hidden = true; $("#nombre").removeAttribute("aria-invalid"); }
+  dibujarPedido();
+});
+$("#datos").addEventListener("submit", e => e.preventDefault());
+
+if (CONFIG.credito && CONFIG.credito.texto) {
+  $("#credito").innerHTML = CONFIG.credito.link
+    ? `<a href="${esc(CONFIG.credito.link)}" target="_blank" rel="noopener">${esc(CONFIG.credito.texto)}</a>` : esc(CONFIG.credito.texto);
+  $("#credito").hidden = false;
+}
+
+async function iniciar() {
+  productos = desdeFilas(RESPALDO);
+  dibujarCatalogo(); dibujarPedido();
+  if (!CONFIG.planilla) return;
+  try {
+    const r = await fetch(CONFIG.planilla + (CONFIG.planilla.includes("?") ? "&" : "?") + "t=" + Date.now());
+    const nuevos = desdeCSV(await r.text());
+    if (nuevos.length) { productos = nuevos; dibujarCatalogo(); dibujarPedido(); }
+  } catch (err) { console.warn("No se pudo leer la planilla; se usa la lista guardada.", err); }
+}
+iniciar();
+</script>
+
+</body>
+</html>
